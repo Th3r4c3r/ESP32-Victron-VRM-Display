@@ -1,0 +1,13 @@
+# Arduino secrets — NEVER commit
+VictronCYD/secrets.h
+
+# Build artifacts
+build/
+*.bin
+*.elf
+*.hex
+*.map
+
+# OS junk
+.DS_Store
+Thumbs.db
