@@ -20,7 +20,6 @@ on a board that costs ~€10.
 | Refresh | ~20 s (VRM logs every ~60 s) | **~2 s, true realtime** |
 | Needs internet | Yes | **No** (local network only) |
 | Needs a token | Yes (VRM Personal Access Token) | **No** |
-| Needs a GX (Cerbo/Venus) on LAN | No (works remotely) | Yes |
 | Library deps | TFT_eSPI, ArduinoJson, StreamUtils | **TFT_eSPI only** |
 
 **Use Modbus** if your GX is on the same network (instant, offline-capable). **Use VRM cloud**
