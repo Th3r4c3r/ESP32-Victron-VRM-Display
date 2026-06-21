@@ -1,5 +1,6 @@
 # Arduino secrets — NEVER commit
 VictronCYD/secrets.h
+VictronCYD_Modbus/secrets.h
 
 # Build artifacts
 build/
