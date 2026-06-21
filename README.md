@@ -4,7 +4,11 @@ A live **Victron energy-flow dashboard** on the **ESP32-2432S028R** — the chea
 TFT board widely known as the **"Cheap Yellow Display" (CYD)**.
 
 It reproduces the Victron tile view — **Grid · Inverter · AC Loads · Battery · DC Loads · Solar** —
-on a board that costs ~€10. No Raspberry Pi, no broker.
+on a board that costs ~€10.
+
+> **This doesn't replace your GX device** — a Cerbo GX / Venus OS (or a Venus-on-RPi) is still the
+> brain of the system. It replaces the *display*: a cheap, always-on wall dashboard instead of a
+> ~€350 GX Touch, a Raspberry Pi + monitor, or keeping VictronConnect open on your phone.
 
 ![dashboard](docs/dashboard.jpg)
 
