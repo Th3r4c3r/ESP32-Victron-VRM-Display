@@ -13,7 +13,11 @@
 #include <WiFi.h>
 #include <TFT_eSPI.h>
 #include <time.h>
+#include "esp_task_wdt.h"
 #include "secrets.h"
+
+#define WDT_TIMEOUT_S 30        // reboot if the loop hangs for >30s
+#define NODATA_REBOOT_MS 120000 // reboot if no valid data for 2 min
 
 // ---------------- CONFIG ----------------
 const char* WIFI_SSID = SECRET_WIFI_SSID;
@@ -44,7 +48,7 @@ uint16_t mbTid = 0;
 double gridW=0, acW=0, dcW=0, battV=0, battA=0, battW=0, soc=0, battT=0, pvW=0;
 String battState="-", sysState="-";
 bool online=false;
-uint32_t lastPoll=0, lastClock=0;
+uint32_t lastPoll=0, lastClock=0, lastGood=0;
 bool blink=false;
 
 struct Box { int x,y,w,h; };
@@ -216,18 +220,26 @@ void setup(){
   drawFrame();
   online=fetchData();
   updateHeader(); updateValues();
+  // hardware watchdog (set up after the initial connect, which can be slow)
+  esp_task_wdt_config_t twdt = { .timeout_ms = (uint32_t)WDT_TIMEOUT_S*1000, .idle_core_mask = 0, .trigger_panic = true };
+  if(esp_task_wdt_init(&twdt)==ESP_ERR_INVALID_STATE) esp_task_wdt_reconfigure(&twdt);
+  esp_task_wdt_add(NULL);
+  lastGood=millis();
   lastPoll=millis();
 }
 
 void loop(){
+  esp_task_wdt_reset();                 // feed the hardware watchdog
   uint32_t now=millis();
   if(now-lastClock>1000){ lastClock=now; blink=!blink; updateHeader(); }
   if(now-lastPoll>POLL_MS){
     lastPoll=now;
     online=fetchData();
+    if(online) lastGood=now;
     updateHeader();
     if(online) updateValues();
   }
   if(WiFi.status()!=WL_CONNECTED){ WiFi.begin(WIFI_SSID,WIFI_PASS); delay(300); }
+  if(millis()-lastGood>NODATA_REBOOT_MS) ESP.restart();   // no fresh data for too long -> reboot
   delay(20);
 }

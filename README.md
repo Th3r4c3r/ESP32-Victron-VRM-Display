@@ -138,6 +138,9 @@ The Modbus client keeps one TCP connection open. To avoid the buffer desync that
 display, `mbRead()` drains stale bytes before each request, validates the response transaction id,
 and **closes the socket on any error** so the next read reconnects and re-syncs automatically.
 
+For an always-on display there's also a **two-level safety net**: a hardware task watchdog
+(reboots if the loop ever hangs >30 s) and a soft reboot if no valid data arrives for 2 minutes.
+
 ## Credits
 
 Built for the ESP32-2432S028R "Cheap Yellow Display". Uses the
